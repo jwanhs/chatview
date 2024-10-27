@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:chatview/src/values/typedefs.dart';
 import 'package:flutter/material.dart';
 
@@ -50,6 +51,9 @@ class LinkPreviewConfiguration {
   /// Provides callback when message detect url in message.
   final StringCallback? onUrlDetect;
 
+  final Widget Function(BuildContext, Metadata, ImageProvider?)?
+      itemBuilder;
+
   const LinkPreviewConfiguration({
     this.onUrlDetect,
     this.loadingColor,
@@ -60,5 +64,6 @@ class LinkPreviewConfiguration {
     this.linkStyle,
     this.padding,
     this.proxyUrl,
+    this.itemBuilder,
   });
 }

@@ -88,11 +88,22 @@ class TextMessageView extends StatelessWidget {
             color: highlightMessage ? highlightColor : _color,
             borderRadius: _borderRadius(textMessage),
           ),
-          child: textMessage.isUrl
-              ? LinkPreview(
-                  linkPreviewConfig: _linkPreviewConfig,
-                  url: textMessage,
-                )
+          child: textMessage.containsUrl
+              ? Column(
+                children: [
+                  LinkPreview(
+                    linkPreviewConfig: _linkPreviewConfig,
+                    url: textMessage.urls[0],
+                  ),
+                  Text(
+                    textMessage,
+                    style: _textStyle ??
+                        textTheme.bodyMedium!.copyWith(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                  )
+                ],)
               : Text(
                   textMessage,
                   style: _textStyle ??

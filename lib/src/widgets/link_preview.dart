@@ -61,43 +61,67 @@ class LinkPreview extends StatelessWidget {
                       fit: BoxFit.fitWidth,
                     ),
                   )
-                : AnyLinkPreview(
-                    link: url,
-                    removeElevation: true,
-                    proxyUrl: linkPreviewConfig?.proxyUrl,
-                    onTap: _onLinkTap,
-                    placeholderWidget: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.25,
-                      width: double.infinity,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 1,
-                          color: linkPreviewConfig?.loadingColor,
-                        ),
-                      ),
-                    ),
-                    backgroundColor: linkPreviewConfig?.backgroundColor ??
-                        Colors.grey.shade200,
-                    borderRadius: linkPreviewConfig?.borderRadius,
-                    bodyStyle: linkPreviewConfig?.bodyStyle ??
-                        const TextStyle(color: Colors.black),
-                    titleStyle: linkPreviewConfig?.titleStyle,
-                  ),
+                : _getAnyLink(context),
           ),
-          const SizedBox(height: verticalPadding),
-          InkWell(
-            onTap: _onLinkTap,
-            child: Text(
-              url,
-              style: linkPreviewConfig?.linkStyle ??
-                  const TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.underline,
-                  ),
-            ),
-          ),
+          // const SizedBox(height: verticalPadding),
+          // InkWell(
+          //   onTap: _onLinkTap,
+          //   child: Text(
+          //     url,
+          //     style: linkPreviewConfig?.linkStyle ??
+          //         const TextStyle(
+          //           color: Colors.white,
+          //           decoration: TextDecoration.underline,
+          //         ),
+          //   ),
+          // ),
         ],
       ),
+    );
+  }
+
+  AnyLinkPreview _getAnyLink(BuildContext context) {
+    if (linkPreviewConfig?.itemBuilder != null) {
+      return AnyLinkPreview.builder(
+        link: url,
+        itemBuilder: (BuildContext context, Metadata metadta, ImageProvider? imageProvider, Object? svgPicture){
+          return linkPreviewConfig!.itemBuilder!(context, metadta, imageProvider);
+        },
+        proxyUrl: linkPreviewConfig?.proxyUrl,
+        placeholderWidget: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.25,
+          width: double.infinity,
+          child: Center(
+            child: CircularProgressIndicator(
+              strokeWidth: 1,
+              color: linkPreviewConfig?.loadingColor,
+            ),
+          ),
+        ),
+      );
+    }
+    return AnyLinkPreview(
+      link: url,
+      removeElevation: true,
+      proxyUrl: linkPreviewConfig?.proxyUrl,
+      onTap: _onLinkTap,
+      placeholderWidget: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.25,
+        width: double.infinity,
+        child: Center(
+          child: CircularProgressIndicator(
+            strokeWidth: 1,
+            color: linkPreviewConfig?.loadingColor,
+          ),
+        ),
+      ),
+      bodyMaxLines: 1,
+      backgroundColor:
+          linkPreviewConfig?.backgroundColor ?? Colors.grey.shade200,
+      borderRadius: linkPreviewConfig?.borderRadius,
+      bodyStyle:
+          linkPreviewConfig?.bodyStyle ?? const TextStyle(color: Colors.black),
+      titleStyle: linkPreviewConfig?.titleStyle,
     );
   }
 
