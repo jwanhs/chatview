@@ -23,6 +23,8 @@ import 'package:flutter/material.dart';
 
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/models/models.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/constants/constants.dart';
 import 'link_preview.dart';
@@ -95,13 +97,15 @@ class TextMessageView extends StatelessWidget {
                     linkPreviewConfig: _linkPreviewConfig,
                     url: textMessage.urls[0],
                   ),
-                  Text(
-                    textMessage,
+                  Linkify(
+                    onOpen: _onOpenLink,
+                    text: textMessage,
                     style: _textStyle ??
                         textTheme.bodyMedium!.copyWith(
                           color: Colors.white,
                           fontSize: 16,
-                        ),
+                    ),
+                    linkStyle: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline),
                   )
                 ],)
               : Text(
@@ -124,6 +128,13 @@ class TextMessageView extends StatelessWidget {
     );
   }
 
+  Future<void> _onOpenLink(LinkableElement link) async {
+    if (await canLaunch(link.url)) {
+      await launch(link.url);
+    } else {
+      throw 'Could not launch ${link.url}';
+    }
+  }
   EdgeInsetsGeometry? get _padding => isMessageBySender
       ? outgoingChatBubbleConfig?.padding
       : inComingChatBubbleConfig?.padding;
