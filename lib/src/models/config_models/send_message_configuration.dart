@@ -65,6 +65,9 @@ class SendMessageConfiguration {
   /// Enable/disable image picker from gallery. Enabled by default.
   final bool enableGalleryImagePicker;
 
+  /// Enable/disable image picker from gallery. Enabled by default.
+  final bool enableGalleryVideoPicker;
+
   /// Enable/disable send image from camera. Enabled by default.
   final bool enableCameraImagePicker;
 
@@ -91,6 +94,7 @@ class SendMessageConfiguration {
     this.allowRecordingVoice = true,
     this.enableCameraImagePicker = true,
     this.enableGalleryImagePicker = true,
+    this.enableGalleryVideoPicker = true,
     this.voiceRecordingConfiguration,
     this.micIconColor,
     this.cancelRecordConfiguration,

@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 
 enum MessageType {
   image,
+  video,
   text,
 
   /// Only supported on android and ios
@@ -37,6 +38,8 @@ enum MessageType {
     if (type?.isEmpty ?? true) return null;
     if (type == image.name) {
       return image;
+    }else if (type == video.name) {
+      return video;
     } else if (type == text.name) {
       return text;
     } else if (type == voice.name) {

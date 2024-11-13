@@ -28,6 +28,7 @@ typedef StringMessageCallBack = void Function(
   String message,
   ReplyMessage replyMessage,
   MessageType messageType,
+  { String? mediaUrl }
 );
 typedef ReplyMessageWithReturnWidget = Widget Function(
   ReplyMessage? replyMessage,

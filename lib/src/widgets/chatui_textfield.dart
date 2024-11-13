@@ -41,6 +41,7 @@ class ChatUITextField extends StatefulWidget {
     required this.onPressed,
     required this.onRecordingComplete,
     required this.onImageSelected,
+    required this.onVideoSelected,
   }) : super(key: key);
 
   /// Provides configuration of default text field in chat.
@@ -60,6 +61,9 @@ class ChatUITextField extends StatefulWidget {
 
   /// Provides callback when user select images from camera/gallery.
   final StringsCallBack onImageSelected;
+
+  /// Provides callback when user select videos from camera/gallery.
+  final StringsCallBack onVideoSelected;
 
   @override
   State<ChatUITextField> createState() => _ChatUITextFieldState();
@@ -265,6 +269,25 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
                                         ?.galleryIconColor,
                                   ),
                             ),
+                            if (sendMessageConfig?.enableGalleryVideoPicker ??
+                              true)
+                            IconButton(
+                              constraints: const BoxConstraints(),
+                              onPressed: (textFieldConfig?.enabled ?? true)
+                                  ? () => _onVideoIconPressed(
+                                        ImageSource.gallery,
+                                        config: sendMessageConfig
+                                            ?.imagePickerConfiguration,
+                                      )
+                                  : null,
+                              icon: imagePickerIconsConfig
+                                      ?.galleryImagePickerIcon ??
+                                  Icon(
+                                    Icons.video_camera_back_sharp,
+                                    color: imagePickerIconsConfig
+                                        ?.galleryIconColor,
+                                  ),
+                            ),
                         ],
                         if ((sendMessageConfig?.allowRecordingVoice ?? false) &&
                             !kIsWeb &&
@@ -370,6 +393,26 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
       widget.onImageSelected(imagePath ?? '', '');
     } catch (e) {
       widget.onImageSelected('', e.toString());
+    }
+  }
+  void _onVideoIconPressed(
+    ImageSource imageSource, {
+    ImagePickerConfiguration? config,
+  }) async {
+    try {
+      final XFile? image = await _imagePicker.pickVideo(
+        source: imageSource,
+        preferredCameraDevice:
+            config?.preferredCameraDevice ?? CameraDevice.rear,
+      );
+      String? imagePath = image?.path;
+      if (config?.onImagePicked != null) {
+        String? updatedImagePath = await config?.onImagePicked!(imagePath);
+        if (updatedImagePath != null) imagePath = updatedImagePath;
+      }
+      widget.onVideoSelected(imagePath ?? '', '');
+    } catch (e) {
+      widget.onVideoSelected('', e.toString());
     }
   }
 

@@ -282,14 +282,14 @@ class _ChatViewState extends State<ChatView>
                                 sendMessageBuilder: widget.sendMessageBuilder,
                                 sendMessageConfig: widget.sendMessageConfig,
                                 onSendTap:
-                                    (message, replyMessage, messageType) {
+                                    (message, replyMessage, messageType, {String? mediaUrl}) {
                                   if (context.suggestionsConfig
                                           ?.autoDismissOnSelection ??
                                       true) {
                                     chatController.removeReplySuggestions();
                                   }
                                   _onSendTap(
-                                      message, replyMessage, messageType);
+                                      message, replyMessage, messageType, mediaUrl: mediaUrl);
                                 },
                                 onReplyCallback: (reply) =>
                                     replyMessage.value = reply,
@@ -336,10 +336,11 @@ class _ChatViewState extends State<ChatView>
     String message,
     ReplyMessage replyMessage,
     MessageType messageType,
-  ) {
+      {String? mediaUrl}
+      ) {
     if (widget.sendMessageBuilder == null) {
       if (widget.onSendTap != null) {
-        widget.onSendTap!(message, replyMessage, messageType);
+        widget.onSendTap!(message, replyMessage, messageType, mediaUrl: mediaUrl);
       }
       _assignReplyMessage();
     }
