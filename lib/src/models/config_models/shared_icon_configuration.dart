@@ -19,41 +19,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'package:chatview/src/models/models.dart';
-import 'package:chatview/src/models/config_models/voice_message_configuration.dart';
 import 'package:flutter/material.dart';
 
 import '../../values/typedefs.dart';
 
-class MessageConfiguration {
-  /// Provides configuration of image message appearance.
-  final ImageMessageConfiguration? imageMessageConfig;
+class ShareIconConfiguration {
+  /// Provides callback when user press on share button.
+  final StringCallback? onPressed; // Returns videoURL
 
-  /// Provides configuration of image message appearance.
-  final VideoMessageConfiguration? videoMessageConfig;
+  /// Provides ability to add custom share icon.
+  final Widget? icon;
 
-  /// Provides configuration of image message appearance.
-  final MessageReactionConfiguration? messageReactionConfig;
+  /// Used to give share icon background color.
+  final Color? defaultIconBackgroundColor;
 
-  /// Provides configuration of emoji messages appearance.
-  final EmojiMessageConfiguration? emojiMessageConfig;
+  /// Used to give share icon padding.
+  final EdgeInsetsGeometry? padding;
 
-  /// Provides builder to create view for custom messages.
-  final Widget Function(Message)? customMessageBuilder;
+  /// Used to give share icon margin.
+  final EdgeInsetsGeometry? margin;
 
-  /// Configurations for voice message bubble
-  final VoiceMessageConfiguration? voiceMessageConfig;
+  /// Used to give share icon color.
+  final Color? defaultIconColor;
 
-  /// To customize reply view for custom message type
-  final CustomMessageReplyViewBuilder? customMessageReplyViewBuilder;
-
-  const MessageConfiguration({
-    this.imageMessageConfig,
-    this.videoMessageConfig,
-    this.messageReactionConfig,
-    this.emojiMessageConfig,
-    this.customMessageBuilder,
-    this.voiceMessageConfig,
-    this.customMessageReplyViewBuilder,
+  ShareIconConfiguration({
+    this.onPressed,
+    this.icon,
+    this.defaultIconBackgroundColor,
+    this.padding,
+    this.margin,
+    this.defaultIconColor,
   });
 }

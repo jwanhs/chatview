@@ -62,7 +62,7 @@ class ImageMessageView extends StatelessWidget {
 
   Widget get iconButton => ShareIcon(
         shareIconConfig: imageMessageConfig?.shareIconConfig,
-        imageUrl: imageUrl,
+        mediaUrl: imageUrl,
       );
 
   @override

@@ -20,26 +20,26 @@
  * SOFTWARE.
  */
 import 'package:flutter/material.dart';
-import 'package:chatview/src/models/config_models/image_message_configuration.dart';
+import '../models/config_models/shared_icon_configuration.dart';
 
 class ShareIcon extends StatelessWidget {
   const ShareIcon({
     Key? key,
     this.shareIconConfig,
-    required this.imageUrl,
+    required this.mediaUrl,
   }) : super(key: key);
 
   /// Provides configuration of share icon which is showed in image preview.
   final ShareIconConfiguration? shareIconConfig;
 
   /// Provides image url of image message.
-  final String imageUrl;
+  final String mediaUrl;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => shareIconConfig?.onPressed != null
-          ? shareIconConfig?.onPressed!(imageUrl)
+          ? shareIconConfig?.onPressed!(mediaUrl)
           : null,
       padding: shareIconConfig?.margin ?? const EdgeInsets.all(8.0),
       icon: shareIconConfig?.icon ??

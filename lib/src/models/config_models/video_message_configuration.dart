@@ -19,41 +19,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import 'package:chatview/src/models/models.dart';
-import 'package:chatview/src/models/config_models/voice_message_configuration.dart';
 import 'package:flutter/material.dart';
 
 import '../../values/typedefs.dart';
+import 'shared_icon_configuration.dart';
 
-class MessageConfiguration {
-  /// Provides configuration of image message appearance.
-  final ImageMessageConfiguration? imageMessageConfig;
+class VideoMessageConfiguration {
+  /// Provides configuration of share button while video message is appeared.
+  final ShareIconConfiguration? shareIconConfig;
 
-  /// Provides configuration of image message appearance.
-  final VideoMessageConfiguration? videoMessageConfig;
+  /// Hide share icon in video view.
+  final bool hideShareIcon;
 
-  /// Provides configuration of image message appearance.
-  final MessageReactionConfiguration? messageReactionConfig;
+  /// Provides callback when user taps on video message.
+  final StringCallback? onTap;
 
-  /// Provides configuration of emoji messages appearance.
-  final EmojiMessageConfiguration? emojiMessageConfig;
+  /// Used for giving height of video message.
+  final double? height;
 
-  /// Provides builder to create view for custom messages.
-  final Widget Function(Message)? customMessageBuilder;
+  /// Used for giving width of video message.
+  final double? width;
 
-  /// Configurations for voice message bubble
-  final VoiceMessageConfiguration? voiceMessageConfig;
+  /// Used for giving padding of video message.
+  final EdgeInsetsGeometry? padding;
 
-  /// To customize reply view for custom message type
-  final CustomMessageReplyViewBuilder? customMessageReplyViewBuilder;
+  /// Used for giving margin of video message.
+  final EdgeInsetsGeometry? margin;
 
-  const MessageConfiguration({
-    this.imageMessageConfig,
-    this.videoMessageConfig,
-    this.messageReactionConfig,
-    this.emojiMessageConfig,
-    this.customMessageBuilder,
-    this.voiceMessageConfig,
-    this.customMessageReplyViewBuilder,
+  /// Used for giving border radius of video message.
+  final BorderRadius? borderRadius;
+
+  const VideoMessageConfiguration({
+    this.hideShareIcon = false,
+    this.shareIconConfig,
+    this.onTap,
+    this.height,
+    this.width,
+    this.padding,
+    this.margin,
+    this.borderRadius,
   });
 }

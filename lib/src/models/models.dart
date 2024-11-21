@@ -21,6 +21,8 @@
  */
 export 'chat_bubble.dart';
 export 'config_models/image_message_configuration.dart';
+export 'config_models/video_message_configuration.dart';
+export 'config_models/shared_icon_configuration.dart';
 export 'data_models/message.dart';
 export 'config_models/message_reaction_configuration.dart';
 export 'data_models/reply_message.dart';

@@ -30,8 +30,11 @@ class Message {
   /// Used for accessing widget's render box.
   final GlobalKey key;
 
-  /// Provides actual message it will be text or image/audio file path.
+  /// Provides actual message it will be text.
   final String message;
+
+  /// Provides the url of the media like image/audio/video file path
+  final String mediaUrl;
 
   /// Provides message created date time.
   final DateTime createdAt;
@@ -61,6 +64,7 @@ class Message {
     required this.sentBy,
     this.replyMessage = const ReplyMessage(),
     Reaction? reaction,
+    this.mediaUrl = '',
     this.messageType = MessageType.text,
     this.voiceMessageDuration,
     MessageStatus status = MessageStatus.pending,
@@ -93,6 +97,7 @@ class Message {
   factory Message.fromJson(Map<String, dynamic> json) => Message(
         id: json['id']?.toString() ?? '',
         message: json['message']?.toString() ?? '',
+        mediaUrl: json['mediaUrl']?.toString()?? '',
         createdAt:
             DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now(),
         sentBy: json['sentBy']?.toString() ?? '',
@@ -120,6 +125,7 @@ class Message {
         'reply_message': replyMessage.toJson(),
         'reaction': reaction.toJson(),
         'message_type': messageType.name,
+        'mediaUrl': mediaUrl,
         'voice_message_duration': voiceMessageDuration?.inMicroseconds,
         'status': status.name,
       };
@@ -128,6 +134,7 @@ class Message {
     String? id,
     GlobalKey? key,
     String? message,
+    String? mediaUrl,
     DateTime? createdAt,
     String? sentBy,
     ReplyMessage? replyMessage,
@@ -140,6 +147,7 @@ class Message {
     return Message(
       id: id ?? this.id,
       message: message ?? this.message,
+      mediaUrl: mediaUrl?? this.mediaUrl,
       createdAt: createdAt ?? this.createdAt,
       sentBy: sentBy ?? this.sentBy,
       messageType: messageType ?? this.messageType,
