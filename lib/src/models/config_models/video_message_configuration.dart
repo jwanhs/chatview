@@ -49,6 +49,9 @@ class VideoMessageConfiguration {
   /// Used for giving border radius of video message.
   final BorderRadius? borderRadius;
 
+  /// Used for giving border radius of video message.
+  final void Function(String)? onVideoOpened;
+
   const VideoMessageConfiguration({
     this.hideShareIcon = false,
     this.shareIconConfig,
@@ -58,5 +61,6 @@ class VideoMessageConfiguration {
     this.padding,
     this.margin,
     this.borderRadius,
+    this.onVideoOpened,
   });
 }

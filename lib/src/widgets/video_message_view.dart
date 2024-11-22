@@ -82,19 +82,26 @@ class _VideoWidgetState extends State<VideoMessageView> {
   }
 
   void _openVideoPlayer() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => FullScreenVideoPlayer(videoUrl: widget.videoUrl),
-      ),
-    );
+    if (widget.videoMessageConfig != null &&
+        widget.videoMessageConfig!.onVideoOpened != null) {
+      widget.videoMessageConfig!.onVideoOpened!(widget.videoUrl);
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>
+              FullScreenVideoPlayer(videoUrl: widget.videoUrl),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment:
-          widget.isMessageBySender ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisAlignment: widget.isMessageBySender
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
       children: [
         if (widget.isMessageBySender &&
             !(widget.videoMessageConfig?.hideShareIcon ?? false))
@@ -119,13 +126,16 @@ class _VideoWidgetState extends State<VideoMessageView> {
                     ? Alignment.centerRight
                     : Alignment.centerLeft,
                 child: Container(
-                  padding: widget.videoMessageConfig?.padding ?? EdgeInsets.zero,
+                  padding:
+                      widget.videoMessageConfig?.padding ?? EdgeInsets.zero,
                   margin: widget.videoMessageConfig?.margin ??
                       EdgeInsets.only(
                         top: 6,
                         right: widget.isMessageBySender ? 6 : 0,
                         left: widget.isMessageBySender ? 0 : 6,
-                        bottom: widget.message.reaction.reactions.isNotEmpty ? 15 : 0,
+                        bottom: widget.message.reaction.reactions.isNotEmpty
+                            ? 15
+                            : 0,
                       ),
                   height: widget.videoMessageConfig?.height ?? 200,
                   width: widget.videoMessageConfig?.width ?? 150,
@@ -184,7 +194,8 @@ class _VideoWidgetState extends State<VideoMessageView> {
 class FullScreenVideoPlayer extends StatefulWidget {
   final String videoUrl;
 
-  const FullScreenVideoPlayer({Key? key, required this.videoUrl}) : super(key: key);
+  const FullScreenVideoPlayer({Key? key, required this.videoUrl})
+      : super(key: key);
 
   @override
   _FullScreenVideoPlayerState createState() => _FullScreenVideoPlayerState();
