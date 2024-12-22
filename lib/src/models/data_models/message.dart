@@ -36,6 +36,9 @@ class Message {
   /// Provides the url of the media like image/audio/video file path
   final String mediaUrl;
 
+ /// Provides the thimbnail url of the video file path
+ final String? mediaThumbnailUrl; 
+
   /// Provides message created date time.
   final DateTime createdAt;
 
@@ -65,6 +68,7 @@ class Message {
     this.replyMessage = const ReplyMessage(),
     Reaction? reaction,
     this.mediaUrl = '',
+    this.mediaThumbnailUrl,
     this.messageType = MessageType.text,
     this.voiceMessageDuration,
     MessageStatus status = MessageStatus.pending,
@@ -98,6 +102,7 @@ class Message {
         id: json['id']?.toString() ?? '',
         message: json['message']?.toString() ?? '',
         mediaUrl: json['mediaUrl']?.toString()?? '',
+        mediaThumbnailUrl: json['mediaThumbnailUrl']?.toString()?? null,
         createdAt:
             DateTime.tryParse(json['createdAt'].toString()) ?? DateTime.now(),
         sentBy: json['sentBy']?.toString() ?? '',
@@ -126,6 +131,7 @@ class Message {
         'reaction': reaction.toJson(),
         'message_type': messageType.name,
         'mediaUrl': mediaUrl,
+        'mediaThumbnailUrl': mediaThumbnailUrl,
         'voice_message_duration': voiceMessageDuration?.inMicroseconds,
         'status': status.name,
       };
@@ -142,12 +148,14 @@ class Message {
     MessageType? messageType,
     Duration? voiceMessageDuration,
     MessageStatus? status,
+    String? mediaThumbnailUrl,
     bool forceNullValue = false,
   }) {
     return Message(
       id: id ?? this.id,
       message: message ?? this.message,
       mediaUrl: mediaUrl?? this.mediaUrl,
+      mediaThumbnailUrl:mediaThumbnailUrl?? this.mediaThumbnailUrl,
       createdAt: createdAt ?? this.createdAt,
       sentBy: sentBy ?? this.sentBy,
       messageType: messageType ?? this.messageType,

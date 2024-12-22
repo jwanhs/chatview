@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chatview/src/extensions/extensions.dart';
 import 'package:chatview/src/models/models.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,9 @@ class _VideoWidgetState extends State<VideoMessageView> {
   @override
   void initState() {
     super.initState();
-    _generateThumbnail();
+    if (widget.message.mediaThumbnailUrl == null) {
+      _generateThumbnail();
+    }
   }
 
   Future<void> _generateThumbnail() async {
@@ -109,17 +112,9 @@ class _VideoWidgetState extends State<VideoMessageView> {
         Stack(
           children: [
             GestureDetector(
-              onTap: _isThumbnailLoading
-                  ? null
-                  : () {
-                      if (_thumbnailBytes != null) {
-                        _openVideoPlayer();
-                      } else {
-                        widget.videoMessageConfig?.onTap != null
-                            ? widget.videoMessageConfig?.onTap!(widget.videoUrl)
-                            : null;
-                      }
-                    },
+              onTap: () {
+                _openVideoPlayer();
+              },
               child: Transform.scale(
                 scale: widget.highlightVideo ? widget.highlightScale : 1.0,
                 alignment: widget.isMessageBySender
@@ -144,34 +139,8 @@ class _VideoWidgetState extends State<VideoMessageView> {
                     color: Colors.black12,
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
-                    child: _isThumbnailLoading
-                        ? Center(child: CircularProgressIndicator())
-                        : _thumbnailBytes != null
-                            ? Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  Image.memory(
-                                    _thumbnailBytes!,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Center(
-                                    child: Icon(
-                                      Icons.play_circle_outline,
-                                      color: Colors.white70,
-                                      size: 50,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : Center(
-                                child: Icon(
-                                  Icons.broken_image,
-                                  color: Colors.grey,
-                                  size: 50,
-                                ),
-                              ),
-                  ),
+                      borderRadius: BorderRadius.circular(14),
+                      child: _getThumbNail()),
                 ),
               ),
             ),
@@ -188,6 +157,53 @@ class _VideoWidgetState extends State<VideoMessageView> {
           widget.iconButton,
       ],
     );
+  }
+
+  _getThumbNail() {
+    print("WAPI VIDEO MESSAGE MEDIA 1");
+    if (widget.message.mediaThumbnailUrl != null) {
+      print("WAPI VIDEO MESSAGE MEDIA 2");
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          CachedNetworkImage(imageUrl: widget.message.mediaThumbnailUrl!),
+          const Center(
+            child: Icon(
+              Icons.play_circle_outline,
+              color: Colors.white70,
+              size: 50,
+            ),
+          ),
+        ],
+      );
+    }
+    print("WAPI VIDEO MESSAGE MEDIA 3");
+    return _isThumbnailLoading
+        ? const Center(child: CircularProgressIndicator())
+        : _thumbnailBytes != null
+            ? Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.memory(
+                    _thumbnailBytes!,
+                    fit: BoxFit.cover,
+                  ),
+                  const Center(
+                    child: Icon(
+                      Icons.play_circle_outline,
+                      color: Colors.white70,
+                      size: 50,
+                    ),
+                  ),
+                ],
+              )
+            : const Center(
+                child: Icon(
+                  Icons.broken_image,
+                  color: Colors.grey,
+                  size: 50,
+                ),
+              );
   }
 }
 
