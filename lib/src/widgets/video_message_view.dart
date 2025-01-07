@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -10,6 +11,7 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'reaction_widget.dart';
 import 'share_icon.dart';
+import 'package:image/image.dart' as img;
 
 class VideoMessageView extends StatefulWidget {
   const VideoMessageView({
@@ -54,12 +56,46 @@ class VideoMessageView extends StatefulWidget {
 class _VideoWidgetState extends State<VideoMessageView> {
   Uint8List? _thumbnailBytes;
   bool _isThumbnailLoading = true;
+  double? _aspectRatio;
 
   @override
   void initState() {
     super.initState();
-    if (widget.message.mediaThumbnailUrl == null) {
+    if (widget.message.mediaThumbnailUrl != null) {
+      _getNetworkImageAspectRatio();
+    } else {
       _generateThumbnail();
+    }
+  }
+
+  Future<void> _getNetworkImageAspectRatio() async {
+    final imageProvider = CachedNetworkImageProvider(widget.message.mediaThumbnailUrl!);
+    final completer = Completer<ImageInfo>();
+    final listener = ImageStreamListener(
+      (ImageInfo info, bool _) {
+        completer.complete(info);
+      },
+      onError: (dynamic error, StackTrace? stackTrace) {
+        completer.completeError(error, stackTrace);
+      },
+    );
+
+    imageProvider.resolve(const ImageConfiguration()).addListener(listener);
+
+    try {
+      final imageInfo = await completer.future;
+      final aspectRatio = imageInfo.image.width / imageInfo.image.height;
+      setState(() {
+        _aspectRatio = aspectRatio;
+        _isThumbnailLoading = false;
+      });
+    } catch (e) {
+      // Handle error, set a default aspect ratio or hide the thumbnail
+      setState(() {
+        _isThumbnailLoading = false;
+        // Optionally, set a default aspect ratio
+        _aspectRatio = 16 / 9;
+      });
     }
   }
 
@@ -68,12 +104,24 @@ class _VideoWidgetState extends State<VideoMessageView> {
       final uint8list = await VideoThumbnail.thumbnailData(
         video: widget.videoUrl,
         imageFormat: ImageFormat.PNG,
-        maxWidth:
-            128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
+        maxWidth: 128, // specify the width of the thumbnail
         quality: 25,
       );
+
+      if (uint8list != null) {
+        final image = img.decodeImage(uint8list);
+        if (image != null) {
+          setState(() {
+            _thumbnailBytes = uint8list;
+            _aspectRatio = image.width / image.height;
+            _isThumbnailLoading = false;
+          });
+          return;
+        }
+      }
+
+      // If decoding fails, fallback
       setState(() {
-        _thumbnailBytes = uint8list;
         _isThumbnailLoading = false;
       });
     } catch (e) {
@@ -112,9 +160,7 @@ class _VideoWidgetState extends State<VideoMessageView> {
         Stack(
           children: [
             GestureDetector(
-              onTap: () {
-                _openVideoPlayer();
-              },
+              onTap: _openVideoPlayer,
               child: Transform.scale(
                 scale: widget.highlightVideo ? widget.highlightScale : 1.0,
                 alignment: widget.isMessageBySender
@@ -132,15 +178,23 @@ class _VideoWidgetState extends State<VideoMessageView> {
                             ? 15
                             : 0,
                       ),
-                  height: widget.videoMessageConfig?.height ?? 200,
-                  width: widget.videoMessageConfig?.width ?? 150,
+                  // Remove fixed height and width
+                  constraints: BoxConstraints(
+                    maxWidth: 300, // Set your desired max width
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
                     color: Colors.black12,
                   ),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: _getThumbNail()),
+                    borderRadius: BorderRadius.circular(14),
+                    child: _aspectRatio != null
+                        ? AspectRatio(
+                            aspectRatio: _aspectRatio!,
+                            child: _getThumbNail(),
+                          )
+                        : _getThumbNail(),
+                  ),
                 ),
               ),
             ),
@@ -159,52 +213,67 @@ class _VideoWidgetState extends State<VideoMessageView> {
     );
   }
 
-  _getThumbNail() {
-    print("WAPI VIDEO MESSAGE MEDIA 1");
-    if (widget.message.mediaThumbnailUrl != null) {
-      print("WAPI VIDEO MESSAGE MEDIA 2");
-      return Stack(
-        fit: StackFit.expand,
-        children: [
-          CachedNetworkImage(imageUrl: widget.message.mediaThumbnailUrl!),
-          const Center(
-            child: Icon(
-              Icons.play_circle_outline,
-              color: Colors.white70,
-              size: 50,
+  Widget _getThumbNail() {
+  if (widget.message.mediaThumbnailUrl != null) {
+    return CachedNetworkImage(
+      imageUrl: widget.message.mediaThumbnailUrl!,
+      imageBuilder: (context, imageProvider) {
+        // You can use ImageProvider to get the image dimensions if needed
+        // For simplicity, assume a standard aspect ratio or fetch dynamically
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            Image(image: imageProvider, fit: BoxFit.cover),
+            const Center(
+              child: Icon(
+                Icons.play_circle_outline,
+                color: Colors.white70,
+                size: 50,
+              ),
             ),
-          ),
-        ],
-      );
-    }
-    print("WAPI VIDEO MESSAGE MEDIA 3");
-    return _isThumbnailLoading
-        ? const Center(child: CircularProgressIndicator())
-        : _thumbnailBytes != null
-            ? Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.memory(
-                    _thumbnailBytes!,
-                    fit: BoxFit.cover,
-                  ),
-                  const Center(
-                    child: Icon(
-                      Icons.play_circle_outline,
-                      color: Colors.white70,
-                      size: 50,
-                    ),
-                  ),
-                ],
-              )
-            : const Center(
-                child: Icon(
-                  Icons.broken_image,
-                  color: Colors.grey,
-                  size: 50,
-                ),
-              );
+          ],
+        );
+      },
+      placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
+      errorWidget: (context, url, error) => const Center(
+        child: Icon(
+          Icons.broken_image,
+          color: Colors.grey,
+          size: 50,
+        ),
+      ),
+    );
   }
+
+  return _isThumbnailLoading
+      ? const Center(child: CircularProgressIndicator())
+      : _thumbnailBytes != null
+          ? Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.memory(
+                  _thumbnailBytes!,
+                  fit: BoxFit.cover,
+                ),
+                const Center(
+                  child: Icon(
+                    Icons.play_circle_outline,
+                    color: Colors.white70,
+                    size: 50,
+                  ),
+                ),
+              ],
+            )
+          : const Center(
+              child: Icon(
+                Icons.broken_image,
+                color: Colors.grey,
+                size: 50,
+              ),
+            );
+}
+
+
 }
 
 class FullScreenVideoPlayer extends StatefulWidget {
