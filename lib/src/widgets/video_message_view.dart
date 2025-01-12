@@ -221,7 +221,7 @@ class _VideoWidgetState extends State<VideoMessageView> {
         // You can use ImageProvider to get the image dimensions if needed
         // For simplicity, assume a standard aspect ratio or fetch dynamically
         return Stack(
-          fit: StackFit.expand,
+          //fit: StackFit.expand,
           children: [
             Image(image: imageProvider, fit: BoxFit.cover),
             const Center(
@@ -249,21 +249,20 @@ class _VideoWidgetState extends State<VideoMessageView> {
       ? const Center(child: CircularProgressIndicator())
       : _thumbnailBytes != null
           ? Stack(
-              fit: StackFit.expand,
-              children: [
-                Image.memory(
-                  _thumbnailBytes!,
-                  fit: BoxFit.cover,
-                ),
-                const Center(
-                  child: Icon(
-                    Icons.play_circle_outline,
-                    color: Colors.white70,
-                    size: 50,
-                  ),
-                ),
-              ],
-            )
+    children: [
+      Image.memory(
+        _thumbnailBytes!,
+        fit: BoxFit.cover,
+      ),
+      const Center(
+        child: Icon(
+          Icons.play_circle_outline,
+          color: Colors.white70,
+          size: 50,
+        ),
+      ),
+    ],
+  )
           : const Center(
               child: Icon(
                 Icons.broken_image,

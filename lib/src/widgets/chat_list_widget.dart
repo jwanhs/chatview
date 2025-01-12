@@ -173,6 +173,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
   }
 
   void _pagination() {
+    if (!mounted) return;
     if (widget.loadMoreData == null || widget.isLastPage == true) return;
     if ((scrollController.position.pixels ==
             scrollController.position.maxScrollExtent) &&
@@ -247,6 +248,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
   @override
   void dispose() {
     chatController.messageStreamController.close();
+    scrollController.removeListener(_pagination);
     scrollController.dispose();
     _isNextPageLoading.dispose();
     super.dispose();

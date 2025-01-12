@@ -327,6 +327,7 @@ class _ChatScreenState extends State<ChatScreen> {
     String message,
     ReplyMessage replyMessage,
     MessageType messageType,
+    { String? mediaUrl }
   ) {
     _chatController.addMessage(
       Message(

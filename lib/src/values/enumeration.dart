@@ -146,3 +146,12 @@ enum ScrollButtonAlignment {
 
   final Alignment alignment;
 }
+
+enum SuggestionItemsType {
+  scrollable,
+  multiline;
+
+  bool get isScrollType => this == SuggestionItemsType.scrollable;
+
+  bool get isMultilineType => this == SuggestionItemsType.multiline;
+}

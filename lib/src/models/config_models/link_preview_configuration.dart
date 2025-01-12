@@ -53,6 +53,8 @@ class LinkPreviewConfiguration {
 
   final Widget Function(BuildContext, Metadata, ImageProvider?)?
       itemBuilder;
+  /// Displays an error message when the link cannot be parsed for preview.
+  final String? errorBody;
 
   const LinkPreviewConfiguration({
     this.onUrlDetect,
@@ -65,5 +67,6 @@ class LinkPreviewConfiguration {
     this.padding,
     this.proxyUrl,
     this.itemBuilder,
+    this.errorBody,
   });
 }

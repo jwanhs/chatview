@@ -243,7 +243,7 @@ void onSendTap(String message, ReplyMessage replyMessage, MessageType messageTyp
     id: '3',
     message: "How are you",
     createdAt: DateTime.now(),
-    senBy: currentUser.id,
+    sentBy: currentUser.id,
     replyMessage: replyMessage,
     messageType: messageType,
   );
@@ -1010,6 +1010,35 @@ ChatView(
   ...
 ),
 ```
+
+
+36. Use `errorBody` to displays an error message when the link cannot be parsed for preview.
+
+
+```dart
+ChatView(
+  ...
+    linkPreviewConfig: LinkPreviewConfiguration(
+      errorBody: 'Error encountered while parsing the link for preview'
+),
+  ...
+),
+```
+
+
+36. Use `suggestionItemType` to displays a suggestion items in multi line and not in scrollable form.
+
+
+```dart
+ChatView(
+  ...
+    replySuggestionsConfig: ReplySuggestionsConfig(
+      suggestionItemType: SuggestionItemsType.multiline,
+    ),
+  ...
+),
+```
+
 
 ## How to use
 

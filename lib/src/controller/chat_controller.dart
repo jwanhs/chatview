@@ -71,6 +71,8 @@ class ChatController {
   /// Represents list of chat users
   List<ChatUser> otherUsers;
 
+  bool _isDisposed = false;
+
   /// Provides current user which is sending messages.
   final ChatUser currentUser;
 
@@ -86,9 +88,11 @@ class ChatController {
 
   /// Used to dispose ValueNotifiers and Streams.
   void dispose() {
+    _isDisposed = true;
     _showTypingIndicator.dispose();
     _replySuggestion.dispose();
-    scrollController.dispose();
+    print("Disposed: $_isDisposed");
+    //scrollController.dispose();
     messageStreamController.close();
   }
 
@@ -151,9 +155,11 @@ class ChatController {
   void scrollToLastMessage() => Timer(
         const Duration(milliseconds: 300),
         () {
+          if (_isDisposed) return;
+          print("Timer working: $_isDisposed");
           if (!scrollController.hasClients) return;
           scrollController.animateTo(
-            scrollController.position.minScrollExtent,
+            scrollController.positions.last.minScrollExtent,
             curve: Curves.easeIn,
             duration: const Duration(milliseconds: 300),
           );
