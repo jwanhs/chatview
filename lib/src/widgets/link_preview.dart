@@ -69,18 +69,6 @@ class LinkPreview extends StatelessWidget {
               ),
             ),
           },
-          const SizedBox(height: verticalPadding),
-          InkWell(
-            onTap: _onLinkTap,
-            child: Text(
-              url,
-              style: linkPreviewConfig?.linkStyle ??
-                  const TextStyle(
-                    color: Colors.white,
-                    decoration: TextDecoration.underline,
-                  ),
-            ),
-          ),
           // const SizedBox(height: verticalPadding),
           // InkWell(
           //   onTap: _onLinkTap,
