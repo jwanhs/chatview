@@ -28,7 +28,7 @@ dependencies:
   # For formatting time locale in message receipts
   timeago:
     git:
-      url: https://github.com/jwanhs/timeago.dart/tree/master/packages/timeago
+      url: https://github.com/nagyist/timeago.dart.git
   cached_network_image: ^3.3.1
   video_player: ^2.9.2
   video_thumbnail: ^0.5.3
