@@ -108,6 +108,10 @@ class ImagePickerIconsConfiguration {
   /// Provides ability to pass custom camera image picker icon.
   final Widget? cameraImagePickerIcon;
 
+  final Widgest? videoPickerIcon;
+
+  final Color? videoIconColor;
+
   /// Used to give color to camera icon.
   final Color? cameraIconColor;
 
@@ -116,9 +120,11 @@ class ImagePickerIconsConfiguration {
 
   const ImagePickerIconsConfiguration({
     this.cameraIconColor,
+    this.cameraImagePickerIcon,
     this.galleryIconColor,
     this.galleryImagePickerIcon,
-    this.cameraImagePickerIcon,
+    this.videoIconColor,
+    this.videoPickerIcon,
   });
 }
 

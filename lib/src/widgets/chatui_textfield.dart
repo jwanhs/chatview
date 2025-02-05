@@ -70,6 +70,9 @@ class ChatUITextField extends StatefulWidget {
 }
 
 class _ChatUITextFieldState extends State<ChatUITextField> {
+  //add focus node for camera button
+  final FocusNode _cameraButtonFocus = FocusNode();
+
   final ValueNotifier<String> _inputText = ValueNotifier('');
 
   final ImagePicker _imagePicker = ImagePicker();
@@ -122,6 +125,7 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
     composingStatus.dispose();
     isRecording.dispose();
     _inputText.dispose();
+    _cameraButtonFocus.dispose();
     super.dispose();
   }
 
@@ -143,6 +147,11 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
         borderRadius: textFieldConfig?.borderRadius ??
             BorderRadius.circular(textFieldBorderRadius),
         color: sendMessageConfig?.textFieldBackgroundColor ?? Colors.white,
+                //add border
+        border: Border.all(
+          color: const Color(0xFFA62217),
+          width: 1.38,
+        ),
       ),
       child: ValueListenableBuilder<bool>(
         valueListenable: isRecording,
@@ -234,6 +243,8 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
                           if (sendMessageConfig?.enableCameraImagePicker ??
                               true)
                             IconButton(
+                              key: const ValueKey('camera_button'),
+                              focusNode: _cameraButtonFocus,
                               constraints: const BoxConstraints(),
                               onPressed: (textFieldConfig?.enabled ?? true)
                                   ? () => _onIconPressed(
@@ -285,7 +296,7 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
                                   Icon(
                                     Icons.video_camera_back_sharp,
                                     color: imagePickerIconsConfig
-                                        ?.galleryIconColor,
+                                        ?.videoIconColor,
                                   ),
                             ),
                         ],
@@ -348,6 +359,8 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
     }
 
     isRecording.value = false;
+    widget.onRecordingComplete(path);
+    _cameraButtonFocus.unfocus();
   }
 
   Future<void> _recordOrStop() async {
