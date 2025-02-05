@@ -31,7 +31,9 @@ dependencies:
       url: https://github.com/jwanhs/timeago.dart
   cached_network_image: ^3.3.1
   video_player: ^2.9.2
-  video_thumbnail: ^0.5.3
+  video_thumbnail:
+    git:
+      url: https://github.com/The-ring-io/flutter_video_thumbnail
   image: ^4.3.0
 
 dev_dependencies:
